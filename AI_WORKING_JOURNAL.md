@@ -37,3 +37,12 @@ This journal records significant decisions made while reviewing and extending th
 - Rejected: database writes directly from browser tests; setup should use API fixtures or an approved test-data endpoint.
 - Rejected: using Playwright for load testing; load testing belongs in k6, Gatling, or JMeter.
 - Deferred: full CDC coverage until the environment can isolate CDC mode from direct Kafka mode.
+
+## 2026-11-22 — Playwright execution fixes
+
+- Discovered: bundled Chromium download completed but Windows extraction hung; McAfee was active and the extraction directory remained locked.
+- Decision: install Chromium into `C:\pw-browsers` and allow Playwright to use the installed `chrome.exe` through `launchOptions.executablePath`.
+- Discovered: the Docker UI was not running on port 3001; started the UI container before execution.
+- Discovered: the password label matched both the input and the show-password button; changed the test locator to `input[name="password"]`.
+- Discovered: the claimant page has both `My Claims` and `No claims yet` headings; narrowed the assertion to the exact page heading.
+- Result: the two smoke tests passed against the Docker Compose stack.

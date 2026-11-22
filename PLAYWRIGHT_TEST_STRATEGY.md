@@ -147,7 +147,25 @@ page.getByLabel('Claim amount');
 page.getByTestId('claim-status');
 ```
 
-## 6. Authentication and storage state
+## 6. Planned functional coverage
+
+The target suite is organized by business risk. Counts below are planning targets, not a requirement that every test be a separate file. Tests should be data-driven where the same rule has multiple valid states.
+
+| Area | Target cases | Representative coverage |
+|---|---:|---|
+| Authentication | 8 | valid claimant/admin login, invalid credentials, validation, logout, session persistence, expired session, login API failure, signup entry |
+| Authorization and security | 6 | claimant blocked from admin routes, admin-only controls, protected route redirect, unauthorized API response, token/session handling, direct URL access |
+| Claimant claims | 10 | empty state, claims list, status display, details modal, refresh, copy ID, navigation, error state, responsive card/table behavior, realtime update visibility |
+| Claim submission wizard | 8 | required-field validation, date/amount boundaries, location validation, description validation, back navigation, review accuracy, successful submission, submission failure |
+| Admin dashboard | 7 | statistics, status breakdown, refresh, loading state, API failure, admin navigation, claimant denial |
+| Admin claim management | 8 | list, status filter, user search, clear filters, valid transitions, confirmation dialog, update success, update failure/terminal status |
+| Error and resilience handling | 6 | backend 4xx/5xx, network failure, empty data, retry, stale session, malformed/unavailable response |
+| Realtime/WebSocket behavior | 5 | connection states, claim update event, reconnect, disconnect warning, event-driven refresh |
+| UI/accessibility smoke checks | 6 | accessible names, keyboard navigation, focus/dialog behavior, form errors, responsive layout, no critical console errors |
+
+Total planning scope: **64 cases**. The current representative E2E baseline covers one high-value workflow per category; the remaining cases should be added incrementally after the baseline is stable.
+
+## 7. Authentication and storage state
 
 Create authenticated storage states once per role:
 
