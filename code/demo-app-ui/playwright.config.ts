@@ -12,7 +12,7 @@ export default defineConfig({
     ['junit', { outputFile: 'playwright-report/results.xml' }],
   ],
   use: {
-    baseURL: 'http://localhost:3001',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3001',
     trace: 'on-first-retry',
   },
   globalSetup: './tests/e2e/global-setup.ts',
@@ -30,12 +30,16 @@ export default defineConfig({
         ]
       : []),
   ],
-  webServer: {
-    command: process.env.CI
-      ? 'npm run build && npm run start -- --port 3001'
-      : 'npm run dev -- --port 3001',
-    url: 'http://localhost:3001',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-  },
+  ...(process.env.PLAYWRIGHT_EXTERNAL_SERVER
+    ? {}
+    : {
+        webServer: {
+          command: process.env.CI
+            ? 'npm run build && npm run start -- --port 3001'
+            : 'npm run dev -- --port 3001',
+          url: 'http://localhost:3001',
+          reuseExistingServer: !process.env.CI,
+          timeout: 120_000,
+        },
+      }),
 });

@@ -45,3 +45,6 @@ next-env.d.ts
 
 # OpenAPI generated code
 /src/lib/api/generated/
+test-results/
+playwright-report/
+tests/.auth/
