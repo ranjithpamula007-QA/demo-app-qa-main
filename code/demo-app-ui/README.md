@@ -34,3 +34,16 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Test commands
+
+Unit tests use Vitest and should be run with `npm test`.
+
+Browser E2E tests use Playwright and should be run with `npm run test:e2e`.
+When the Docker Compose UI is already running on port 3001, use:
+
+```powershell
+$env:PLAYWRIGHT_EXTERNAL_SERVER = "true"
+npx.cmd playwright test --grep "@smoke"
+```
+
+Do not run Playwright specs through Vitest; they use different runners and fixtures.
