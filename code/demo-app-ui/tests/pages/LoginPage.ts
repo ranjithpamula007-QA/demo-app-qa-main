@@ -42,7 +42,7 @@ export class LoginPage extends BasePage {
     };
 
     this.messages = {
-      error: page.getByRole('alert'),
+      error: page.getByText('Invalid email or password', { exact: true }),
     };
 
     this.links = {

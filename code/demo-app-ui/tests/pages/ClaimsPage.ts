@@ -25,7 +25,7 @@ export class ClaimsPage extends BasePage {
     };
 
     this.buttons = {
-      newClaim: page.getByRole('button', { name: /new claim|submit claim/i }),
+      newClaim: page.getByRole('button', { name: 'Submit New Claim' }),
       logout: page.getByRole('button', { name: /log out|logout/i }),
     };
 

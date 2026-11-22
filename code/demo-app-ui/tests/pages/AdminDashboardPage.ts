@@ -55,4 +55,10 @@ export class AdminDashboardPage extends BasePage {
   async refresh() {
     await this.buttons.refresh.click();
   }
+
+  async statusCount(statusLabel: string) {
+    const card = this.page.getByTestId('stats-card-chart');
+    const row = card.locator('div.flex.items-center.justify-between').filter({ hasText: statusLabel });
+    return Number(await row.locator('span').last().innerText());
+  }
 }
