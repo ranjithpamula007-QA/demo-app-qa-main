@@ -1,5 +1,7 @@
 import { test, expect } from '../fixtures/test';
 import { AdminClaimsPage, ClaimWizardPage, SignupPage } from '../pages';
+import { newTestUser, invalidUser } from '../data/users';
+import { validClaim } from '../data/claims';
 
 test.describe('Representative functional coverage', () => {
   test('@authentication claimant can reach the claims workspace', async ({ claimsPage }) => {
@@ -10,12 +12,11 @@ test.describe('Representative functional coverage', () => {
 
   test('@registration newly registered user can log in and reach My Claims', async ({ page, loginPage }) => {
     const signup = new SignupPage(page);
-    const email = `playwright-${Date.now()}@demo.com`;
-    const password = 'Playwright123!';
+    const user = newTestUser();
 
     await signup.goto();
-    await signup.register('Playwright Test User', email, password);
-    await loginPage.login(email, password);
+    await signup.register(user.name, user.email, user.password);
+    await loginPage.login(user.email, user.password);
     await expect(page).toHaveURL(/\/claims$/);
     await expect(page.getByRole('heading', { name: 'My Claims' })).toBeVisible();
   });
@@ -27,10 +28,11 @@ test.describe('Representative functional coverage', () => {
 
   test('@claim-submission claimant can complete the three-step claim workflow', async ({ claimantPage }) => {
     const wizard = new ClaimWizardPage(claimantPage);
+    const claim = validClaim();
     await wizard.goto();
-    await wizard.completeStepOne();
+    await wizard.completeStepOne(claim);
     await expect(claimantPage.getByRole('heading', { name: 'Supporting Details' })).toBeVisible();
-    await wizard.completeStepTwo();
+    await wizard.completeStepTwo(claim);
     await wizard.submit();
   });
 
@@ -43,11 +45,12 @@ test.describe('Representative functional coverage', () => {
 
   test('@claim-submission wizard preserves entered details when navigating back', async ({ claimantPage }) => {
     const wizard = new ClaimWizardPage(claimantPage);
+    const claim = validClaim();
     await wizard.goto();
-    await wizard.completeStepOne();
+    await wizard.completeStepOne(claim);
     await expect(claimantPage.getByRole('heading', { name: 'Supporting Details' })).toBeVisible();
     await wizard.returnToStepOne();
-    await wizard.expectStepOneValues();
+    await wizard.expectStepOneValues(claim);
   });
 
   test('@admin admin can view dashboard and use claims filters', async ({ adminPage, adminDashboardPage }) => {
@@ -65,9 +68,10 @@ test.describe('Representative functional coverage', () => {
 
   test('@claim-status submitted claim moves to under review and dashboard counts update', async ({ claimantPage, adminPage, adminDashboardPage }) => {
     const wizard = new ClaimWizardPage(claimantPage);
+    const claim = validClaim();
     await wizard.goto();
-    await wizard.completeStepOne();
-    await wizard.completeStepTwo();
+    await wizard.completeStepOne(claim);
+    await wizard.completeStepTwo(claim);
     await wizard.submit();
 
     await adminDashboardPage.goto();
@@ -94,7 +98,7 @@ test.describe('Representative functional coverage', () => {
       await route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ detail: 'Invalid email or password' }) });
     });
     await loginPage.goto();
-    await loginPage.login('invalid@example.com', 'InvalidPassword123!');
+    await loginPage.login(invalidUser.email, invalidUser.password);
     await loginPage.expectInvalidCredentials();
   });
 

@@ -6,6 +6,19 @@ export interface TestUser {
   role: TestRole;
 }
 
+export const invalidUser: TestUser = {
+  email: 'invalid@example.com',
+  password: 'InvalidPassword123!',
+  role: 'CLAIMANT',
+};
+
+export const newTestUser = (): TestUser & { name: string } => ({
+  name: 'Playwright Test User',
+  email: `playwright-${Date.now()}@demo.com`,
+  password: 'Playwright123!',
+  role: 'CLAIMANT',
+});
+
 export const testUsers: Record<TestRole, TestUser> = {
   ADMIN: {
     email: process.env.ADMIN_EMAIL ?? 'admin@demo.com',

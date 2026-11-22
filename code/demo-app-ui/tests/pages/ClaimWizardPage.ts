@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import type { ClaimTestData } from '../data/claims';
 
 export class ClaimWizardPage extends BasePage {
   readonly fields = {
@@ -17,14 +18,14 @@ export class ClaimWizardPage extends BasePage {
     await this.page.goto('/claims/new');
     await expect(this.page.getByRole('heading', { name: 'Submit New Claim' })).toBeVisible();
   }
-  async completeStepOne() {
-    await this.fields.incidentDate.fill('2025-01-15');
-    await this.fields.incidentLocation.fill('123 Main Street, Springfield');
-    await this.fields.claimAmount.fill('1250.50');
+  async completeStepOne(data: Pick<ClaimTestData, 'incidentDate' | 'incidentLocation' | 'claimAmount'>) {
+    await this.fields.incidentDate.fill(data.incidentDate);
+    await this.fields.incidentLocation.fill(data.incidentLocation);
+    await this.fields.claimAmount.fill(data.claimAmount);
     await this.buttons.next.click();
   }
-  async completeStepTwo() {
-    await this.fields.description.fill('The insured vehicle was damaged in a documented collision at the listed location.');
+  async completeStepTwo(data: Pick<ClaimTestData, 'description'>) {
+    await this.fields.description.fill(data.description);
     await this.buttons.next.click();
   }
 
@@ -33,10 +34,10 @@ export class ClaimWizardPage extends BasePage {
     await expect(this.page.getByRole('heading', { name: 'Incident Details' })).toBeVisible();
   }
 
-  async expectStepOneValues() {
-    await expect(this.fields.incidentDate).toHaveValue('2025-01-15');
-    await expect(this.fields.incidentLocation).toHaveValue('123 Main Street, Springfield');
-    await expect(this.fields.claimAmount).toHaveValue('1250.50');
+  async expectStepOneValues(data: Pick<ClaimTestData, 'incidentDate' | 'incidentLocation' | 'claimAmount'>) {
+    await expect(this.fields.incidentDate).toHaveValue(data.incidentDate);
+    await expect(this.fields.incidentLocation).toHaveValue(data.incidentLocation);
+    await expect(this.fields.claimAmount).toHaveValue(data.claimAmount);
   }
   async submit() {
     await expect(this.page.getByRole('heading', { name: 'Review Your Claim' })).toBeVisible();
