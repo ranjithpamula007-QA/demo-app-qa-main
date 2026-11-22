@@ -8,14 +8,17 @@ const claimantPassword = process.env.CLAIMANT_PASSWORD ?? 'Claimant123!';
 async function login(page: Page, email: string, password: string) {
   await page.goto('/login');
   await page.getByLabel('Email').fill(email);
-  await page.getByLabel('Password').fill(password);
+  await page.locator('input[name="password"]').fill(password);
+  const responsePromise = page.waitForResponse((response) => response.url().endsWith('/api/auth/login'));
   await page.getByRole('button', { name: 'Log In' }).click();
+  const response = await responsePromise;
+  expect(response.status()).toBe(200);
 }
 
 test('@smoke claimant can log in and view claims', async ({ page }) => {
   await login(page, claimantEmail, claimantPassword);
   await expect(page).toHaveURL(/\/claims/);
-  await expect(page.getByRole('heading', { name: /claims/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'My Claims' })).toBeVisible();
 });
 
 test('@smoke admin can log in and load dashboard statistics', async ({ page }) => {
