@@ -41,6 +41,15 @@ test.describe('Representative functional coverage', () => {
     await expect(claimantPage).toHaveURL(/\/claims$/);
   });
 
+  test('@claim-submission wizard preserves entered details when navigating back', async ({ claimantPage }) => {
+    const wizard = new ClaimWizardPage(claimantPage);
+    await wizard.goto();
+    await wizard.completeStepOne();
+    await expect(claimantPage.getByRole('heading', { name: 'Supporting Details' })).toBeVisible();
+    await wizard.returnToStepOne();
+    await wizard.expectStepOneValues();
+  });
+
   test('@admin admin can view dashboard and use claims filters', async ({ adminPage, adminDashboardPage }) => {
     await adminDashboardPage.goto();
     await adminDashboardPage.expectLoaded();

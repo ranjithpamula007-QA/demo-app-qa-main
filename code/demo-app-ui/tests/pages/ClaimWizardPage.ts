@@ -10,6 +10,7 @@ export class ClaimWizardPage extends BasePage {
   };
   readonly buttons = {
     next: this.page.locator('[data-testid^="wizard-step-"]').getByRole('button', { name: 'Next' }),
+    back: this.page.getByRole('button', { name: 'Back' }),
     submit: this.page.getByTestId('wizard-step-3').getByRole('button', { name: 'Submit Claim' }),
   };
   async goto() {
@@ -25,6 +26,17 @@ export class ClaimWizardPage extends BasePage {
   async completeStepTwo() {
     await this.fields.description.fill('The insured vehicle was damaged in a documented collision at the listed location.');
     await this.buttons.next.click();
+  }
+
+  async returnToStepOne() {
+    await this.buttons.back.click();
+    await expect(this.page.getByRole('heading', { name: 'Incident Details' })).toBeVisible();
+  }
+
+  async expectStepOneValues() {
+    await expect(this.fields.incidentDate).toHaveValue('2025-01-15');
+    await expect(this.fields.incidentLocation).toHaveValue('123 Main Street, Springfield');
+    await expect(this.fields.claimAmount).toHaveValue('1250.50');
   }
   async submit() {
     await expect(this.page.getByRole('heading', { name: 'Review Your Claim' })).toBeVisible();
